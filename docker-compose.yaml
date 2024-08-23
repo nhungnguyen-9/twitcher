@@ -1,0 +1,15 @@
+services:
+  db:
+    container_name: twitcher-db
+    image: postgres:16.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - '54320:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
