@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          BigInt     @id @default(autoincrement())
+  username    String
+  imageUrl    String?
+  externalUrl String?
+  bio         String?
+  social      String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  streams     Stream[]
+  followers   Follow[]   @relation("UserFollowers")
+  following   Follow[]   @relation("UserFollowing")
+  blocks      Block[]    @relation("UserBlocking")
+  blockedBy   Block[]    @relation("UserBlockedBy")
+
+  @@index([username], name: "idx_username")
+}
+
+model Follow {
+  id           BigInt     @id @default(autoincrement())
+  followerId   BigInt
+  followingId  BigInt
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  follower     User       @relation("UserFollowing", fields: [followerId], references: [id])
+  following    User       @relation("UserFollowers", fields: [followingId], references: [id])
+
+  @@index([followerId])
+  @@index([followingId])
+
+  @@unique([followerId, followingId], name: "unique_follow")
+}
+
+model Block {
+  id          BigInt     @id @default(autoincrement())
+  blockedId   BigInt
+  blockingId  BigInt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  blocked     User       @relation("UserBlockedBy", fields: [blockedId], references: [id])
+  blocking    User       @relation("UserBlocking", fields: [blockingId], references: [id])
+
+  @@index([blockedId])
+  @@index([blockingId])
+
+  @@unique([blockedId, blockingId], name: "unique_block")
+}
+
+model Stream {
+  id            BigInt    @id @default(autoincrement())
+  userId        BigInt
+  title         String
+  thumbnailUrl  String?
+  category      String?
+  ingressID     String
+  serverUrl     String
+  streamKey     String
+  isLive        Boolean
+  isChatEnabled Boolean
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@unique([streamKey], name: "unique_streamKey")
+}
