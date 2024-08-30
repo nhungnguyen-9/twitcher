@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { SignInButton } from "@clerk/nextjs"
+import { SignInButton, UserButton } from "@clerk/nextjs"
 import { currentUser } from "@clerk/nextjs/server"
 import { Clapperboard } from "lucide-react"
 import Link from "next/link"
@@ -32,6 +32,7 @@ export const Actions = async () => {
                             <span className="hidden lg:block">Dashboard</span>
                         </Link>
                     </Button>
+                    <UserButton />
                 </div>
             )}
         </div>
