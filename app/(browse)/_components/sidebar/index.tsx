@@ -1,7 +1,13 @@
-import React from 'react'
+import { Toggle } from "./toggle"
+import Wrapper from "./wrapper"
 
-export const Sidebar = () => {
+export const Sidebar = async () => {
     return (
-        <div>Sidebar</div>
+        <Wrapper>
+            <Toggle />
+            <div className="space-y-4 pt-4 lg:pt-0">
+                recommend channels
+            </div>
+        </Wrapper>
     )
 }
