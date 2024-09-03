@@ -8,19 +8,19 @@ datasource db {
 }
 
 model User {
-  id          BigInt   @id @default(autoincrement())
-  username    String   @unique
-  imageUrl    String  @db.Text
-  externalUserId String  @unique
-  bio         String?  @db.Text
-  social      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             BigInt   @id @default(autoincrement())
+  username       String   @unique
+  imageUrl       String   @db.Text
+  externalUserId String   @unique
+  bio            String?  @db.Text
+  social         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Relations
   streams   Stream[]
-  followers Follow[] @relation("UserFollowers")
-  following Follow[] @relation("UserFollowing")
+  followers Follow[] @relation("FollowedBy")
+  following Follow[] @relation("Following")
   blocks    Block[]  @relation("UserBlocking")
   blockedBy Block[]  @relation("UserBlockedBy")
 
@@ -28,14 +28,15 @@ model User {
 }
 
 model Follow {
-  id          BigInt   @id @default(autoincrement())
+  id          BigInt @id @default(autoincrement())
   followerId  BigInt
   followingId BigInt
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
-  follower  User @relation("UserFollowing", fields: [followerId], references: [id])
-  following User @relation("UserFollowers", fields: [followingId], references: [id])
+  follower  User @relation(name: "Following", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation(name: "FollowedBy", fields: [followingId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([followerId, followingId], name: "unique_follow")
   @@index([followerId])
