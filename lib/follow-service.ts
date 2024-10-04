@@ -1,7 +1,7 @@
-import {db} from "./db"
-import {getSelf} from "./auth-service"
+import { db } from "./db"
+import { getSelf } from "./auth-service"
 
-const getFollowedUsers = async () => {
+export const getFollowedUsers = async () => {
     try {
         const self = await getSelf();
 
@@ -23,7 +23,7 @@ const existedFollower = async (id: number) => {
     const self = await getSelf()
 
     const otherUser = await db.user.findUnique({
-        where: {id}
+        where: { id }
     })
 
     if (!otherUser) {
@@ -55,7 +55,7 @@ export const followUser = async (id: number) => {
     const self = await getSelf()
 
     const otherUser = await db.user.findUnique({
-        where: {id}
+        where: { id }
     })
 
     if (!otherUser) {

@@ -1,4 +1,4 @@
-import { db } from "./db"; 
+import { db } from "./db";
 import { getSelf } from "./auth-service";
 
 export const getRecommended = async () => {
@@ -15,9 +15,22 @@ export const getRecommended = async () => {
     if (userId) {
         users = await db.user.findMany({
             where: {
-                NOT: {
-                    id: userId
-                }
+                AND: [
+                    {
+                        NOT: {
+                            id: userId
+                        }
+                    },
+                    {
+                        NOT: {
+                            followers: {
+                                some: {
+                                    followerId: userId
+                                }
+                            }
+                        }
+                    }
+                ]
             },
             orderBy: {
                 createdAt: "desc",

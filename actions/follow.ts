@@ -1,4 +1,5 @@
 "use server";
+
 import { revalidatePath } from "next/cache";
 import { followUser, unfollowUser } from "@/lib/follow-service";
 
@@ -22,7 +23,9 @@ export const onUnfollow = async (id: number) => {
         if (unfollowedUser) {
             revalidatePath(`/${unfollowedUser.following.username}`)
         }
-    }catch (error) {
+
+        return unfollowedUser
+    } catch (error) {
         throw new Error("Internal Server Error")
     }
 }
