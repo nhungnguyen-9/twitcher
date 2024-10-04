@@ -7,7 +7,7 @@ export const getFollowedUsers = async () => {
 
         const followedUsers = db.follow.findMany({
             where: {
-                followerId: self.id,
+                follower_id: self.id,
             },
             include: {
                 following: true
@@ -35,8 +35,8 @@ const existedFollower = async (id: number) => {
 
     return await db.follow.findFirst({
         where: {
-            followerId: self.id,
-            followingId: otherUser.id,
+            follower_id: self.id,
+            following_id: otherUser.id,
         }
     })
 }
@@ -67,8 +67,8 @@ export const followUser = async (id: number) => {
 
     const existingFollow = await db.follow.findFirst({
         where: {
-            followerId: self.id,
-            followingId: otherUser.id,
+            follower_id: self.id,
+            following_id: otherUser.id,
         }
     })
 
@@ -78,8 +78,8 @@ export const followUser = async (id: number) => {
 
     const follow = await db.follow.create({
         data: {
-            followerId: self.id,
-            followingId: otherUser.id,
+            follower_id: self.id,
+            following_id: otherUser.id,
         },
         include: {
             following: true,

@@ -8,72 +8,119 @@ datasource db {
 }
 
 model User {
-  id             BigInt   @id @default(autoincrement())
-  username       String   @unique
-  imageUrl       String   @db.Text
-  externalUserId String   @unique
-  bio            String?  @db.Text
-  social         String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id               BigInt   @id @default(autoincrement())
+  role_id          BigInt
+  email            String   @unique
+  username         String   @unique
+  image_url        String   @db.Text
+  external_user_id String   @unique
+  bio              String?  @db.Text
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  role Role @relation(fields: [role_id], references: [id])
 
   // Relations
-  streams   Stream[]
-  followers Follow[] @relation("FollowedBy")
-  following Follow[] @relation("Following")
-  blocks    Block[]  @relation("UserBlocking")
-  blockedBy Block[]  @relation("UserBlockedBy")
+  streams    Stream[]
+  followers  Follow[] @relation("FollowedBy")
+  following  Follow[] @relation("Following")
+  blocks     Block[]  @relation("UserBlocking")
+  blocked_by Block[]  @relation("UserBlockedBy")
+  socials     Social[]
 
   @@index([username], name: "idx_username")
 }
 
+model Role {
+  id   BigInt @id @default(autoincrement())
+  name String @unique
+  users User[]
+}
+
+// { social: {id:1, user_id:10, name:Instagram, link:https://insta.com }}
+model Social {
+  id      BigInt @id @default(autoincrement())
+  user_id BigInt
+  name    String
+  link    String
+
+  user User @relation(fields: [user_id], references: [id])
+}
+
+model Category {
+  id    BigInt @id @default(autoincrement())
+  title String
+
+  streams StreamCategory[]
+}
+
+model StreamCategory {
+  stream_id   BigInt
+  category_id BigInt
+
+  stream   Stream   @relation(fields: [stream_id], references: [id])
+  category Category @relation(fields: [category_id], references: [id])
+
+  @@id([stream_id, category_id])
+}
+
+model Comment {
+  id        BigInt @id @default(autoincrement())
+  stream_id BigInt
+  content   String
+
+  stream Stream @relation(fields: [stream_id], references: [id])
+}
+
 model Follow {
-  id          BigInt @id @default(autoincrement())
-  followerId  BigInt
-  followingId BigInt
+  id           BigInt @id @default(autoincrement())
+  follower_id  BigInt
+  following_id BigInt
 
-  follower  User @relation(name: "Following", fields: [followerId], references: [id], onDelete: Cascade)
-  following User @relation(name: "FollowedBy", fields: [followingId], references: [id], onDelete: Cascade)
+  follower  User @relation(name: "Following", fields: [follower_id], references: [id], onDelete: Cascade)
+  following User @relation(name: "FollowedBy", fields: [following_id], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  @@unique([followerId, followingId], name: "unique_follow")
-  @@index([followerId])
-  @@index([followingId])
+  @@unique([follower_id, following_id], name: "unique_follow")
+  @@index([follower_id])
+  @@index([following_id])
 }
 
 model Block {
-  id         BigInt   @id @default(autoincrement())
-  blockedId  BigInt
-  blockingId BigInt
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          BigInt   @id @default(autoincrement())
+  blocked_id  BigInt
+  blocking_id BigInt
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
 
-  blocked  User @relation("UserBlockedBy", fields: [blockedId], references: [id])
-  blocking User @relation("UserBlocking", fields: [blockingId], references: [id])
+  blocked  User @relation("UserBlockedBy", fields: [blocked_id], references: [id])
+  blocking User @relation("UserBlocking", fields: [blocking_id], references: [id])
 
-  @@unique([blockedId, blockingId], name: "unique_block")
-  @@index([blockedId])
-  @@index([blockingId])
+  @@unique([blocked_id, blocking_id], name: "unique_block")
+  @@index([blocked_id])
+  @@index([blocking_id])
 }
 
 model Stream {
-  id            BigInt   @id @default(autoincrement())
-  userId        BigInt
-  title         String
-  thumbnailUrl  String?
-  category      String?
-  ingressID     String
-  serverUrl     String
-  streamKey     String
-  isLive        Boolean
-  isChatEnabled Boolean
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              BigInt   @id @default(autoincrement())
+  user_id         BigInt
+  title           String
+  thumbnail_url   String?
+  ingress_id      String
+  server_url      String
+  stream_key      String
+  is_live         Boolean
+  is_chat_enabled Boolean
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  categories StreamCategory[]
+  Comment    Comment[]
 
-  @@unique([streamKey], name: "unique_streamKey")
-  @@index([userId])
+  user User @relation(fields: [user_id], references: [id])
+
+  @@unique([stream_key], name: "unique_stream_key")
+  @@index([user_id])
 }
