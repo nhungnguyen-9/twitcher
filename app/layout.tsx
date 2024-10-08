@@ -27,7 +27,7 @@ export default function RootLayout({
             forcedTheme="dark"
             storageKey="gamehub-theme"
           >
-            <Toaster theme="light" position="top-right" />
+            <Toaster theme="light" position="bottom-left" />
             {children}
           </ThemeProvider>
         </body>
