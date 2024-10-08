@@ -1,5 +1,6 @@
 import { db } from "./db";
 import { getSelf } from "./auth-service";
+import { User } from "@prisma/client";
 
 export const getRecommended = async () => {
     let userId;
@@ -10,10 +11,10 @@ export const getRecommended = async () => {
     } catch {
         userId = null
     }
-    let users = []
+    let users: User[] = []
 
     if (userId) {
-        users = await db.user.findMany({
+        const users = await db.user.findMany({
             where: {
                 AND: [
                     {
@@ -25,21 +26,28 @@ export const getRecommended = async () => {
                         NOT: {
                             followers: {
                                 some: {
-                                    followerId: userId
+                                    follower_id: userId
                                 }
                             }
                         }
                     }
                 ]
             },
+            include: {
+                streams: {  
+                    select: {
+                        is_live: true
+                    }
+                }
+            },
             orderBy: {
-                createdAt: "desc",
+                created_at: 'desc',
             }
-        })
+        });
     } else {
         users = await db.user.findMany({
             orderBy: {
-                createdAt: "desc"
+                created_at: "desc"
             }
         })
     }
