@@ -25,7 +25,7 @@ model User {
   followers Follow[] @relation("FollowedBy")
   following Follow[] @relation("Following")
   blockers  Block[]  @relation("Blocker")
-  blocking  Block[]  @relation("Blocking")
+  blocked  Block[]  @relation("Blocked")
   socials   Social[]
 
   @@index([username], name: "idx_username")
@@ -90,16 +90,16 @@ model Follow {
 
 model Block {
   id          BigInt   @id @default(autoincrement())
-  blocker_id  BigInt
+  blocked_id  BigInt
   blocking_id BigInt
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  blocker  User    @relation("Blocker", fields: [blocker_id], references: [id])
-  blocking User    @relation("Blocking", fields: [blocking_id], references: [id])
+  blocked  User @relation("UserBlockedBy", fields: [blocked_id], references: [id])
+  blocking User @relation("UserBlocking", fields: [blocking_id], references: [id])
 
-  @@unique([blocker_id, blocking_id], name: "unique_block")
-  @@index([blocker_id])
+  @@unique([blocked_id, blocking_id], name: "unique_block")
+  @@index([blocked_id])
   @@index([blocking_id])
 }
 

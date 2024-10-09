@@ -34,7 +34,7 @@ export const existedBlocking = async (id: number) => {
     }
 
     return db.block.findFirst({
-        where: {blocker_id: self.id, blocking_id: otherUser.id}
+        where: {blocker_id: self.id, blocked_id: otherUser.id}
     })
 }
 
@@ -55,7 +55,6 @@ export const blockUser = async (id: number) => {
     const existingFollow = await db.block.findFirst({
         where: {
             blocker_id: self.id,
-            blocking_id: otherUser.id,
         }
     })
 
