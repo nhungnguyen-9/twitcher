@@ -24,7 +24,7 @@ model User {
   streams   Stream[]
   followers Follow[] @relation("FollowedBy")
   following Follow[] @relation("Following")
-  blockers  Block[]  @relation("Blocker")
+  blocker   Block[]  @relation("Blocker")
   blocked   Block[]  @relation("Blocked")
   socials   Social[]
 
@@ -95,8 +95,8 @@ model Block {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  blocked  User @relation("Blocker", fields: [blocker_id], references: [id])
-  blocking User @relation("Blocked", fields: [blocked_id], references: [id])
+  blocker User @relation("Blocker", fields: [blocker_id], references: [id])
+  blocked User @relation("Blocked", fields: [blocked_id], references: [id])
 
   @@unique([blocker_id, blocked_id], name: "unique_block")
   @@index([blocker_id])
