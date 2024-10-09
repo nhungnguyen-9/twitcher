@@ -10,7 +10,7 @@ export const getBlockUsers = async () => {
                 blocker_id: self.id,
             },
             include: {
-                blocking: true
+                blocked: true
             }
         })
     } catch {
@@ -68,7 +68,7 @@ export const blockUser = async (id: number) => {
             blocked_id: otherUser.id,
         },
         include: {
-            blocking: true,
+            blocked: true,
             blocker: true
         }
     })
@@ -85,7 +85,7 @@ export const unblockUser = async (id: number) => {
                 id: existingBlock.id
             },
             include: {
-                blocking: true,
+                blocked: true,
             }
         }
     );

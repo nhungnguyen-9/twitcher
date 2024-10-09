@@ -9,7 +9,7 @@ export const onBlock = async (id: number) => {
         const blockedUser = await blockUser(id);
         revalidatePath("/")
         if (blockedUser) {
-            revalidatePath(`/${blockedUser.blocking.username}`)
+            revalidatePath(`/${blockedUser.blocked.username}`)
         }
         return blockedUser
     } catch (error) {
@@ -22,7 +22,7 @@ export const onUnblock = async (id: number) => {
         const unblockedUser = await unblockUser(id)
         revalidatePath("/")
         if (unblockedUser) {
-            revalidatePath(`/${unblockedUser.blocking.username}`)
+            revalidatePath(`/${unblockedUser.blocked.username}`)
         }
 
         return unblockedUser
