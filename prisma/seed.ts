@@ -1,23 +1,39 @@
-import { PrismaClient } from '@prisma/client'
+import {PrismaClient} from '@prisma/client'
+
 const prisma = new PrismaClient()
 
 async function main() {
     const adminRole = await prisma.role.upsert({
-        where: { name: 'admin' },
+        where: {name: 'admin'},
         update: {},
         create: {
             name: 'admin',
         },
     })
+
     const userRole = await prisma.role.upsert({
-        where: { name: 'user' },
+        where: {name: 'user'},
         update: {},
         create: {
             name: 'user',
         },
     })
-    console.log({ adminRole, userRole })
+
+    const gameCategory = await prisma.category.create({
+        data: {title: "gaming"}
+    })
+
+    const podcastCategory = await prisma.category.create({
+        data: {title: "podcast"}
+    })
+
+    const entertainCategory = await prisma.category.create({
+        data: {title: "entertainment"}
+    })
+
+
 }
+
 main()
     .then(async () => {
         await prisma.$disconnect()

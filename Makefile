@@ -32,4 +32,7 @@ prisma.push:
 prisma.studio:
 	npx prisma studio
 
-PHONY: docker.up docker.down docker.start docker.stop prisma.migrate prisma.generate prisma.push prisma.studio
+prisma.seed:
+	npx prisma db seed
+
+PHONY: docker.up docker.down docker.start docker.stop prisma.migrate prisma.generate prisma.push prisma.studio prisma.seed
