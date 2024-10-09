@@ -49,27 +49,27 @@ export const blockUser = async (id: number) => {
         throw new Error("User not found")
     }
     if (otherUser.id === self.id) {
-        throw new Error("Cannot follow yourself")
+        throw new Error("Cannot block yourself")
     }
 
-    const existingFollow = await db.block.findFirst({
+    const existingBlock = await db.block.findFirst({
         where: {
             blocker_id: self.id,
         }
     })
 
-    if (existingFollow) {
-        throw new Error("Already following")
+    if (existingBlock) {
+        throw new Error("Already blocking")
     }
 
-    return db.follow.create({
+    return db.block.create({
         data: {
-            follower_id: self.id,
-            following_id: otherUser.id,
+            blocker_id: self.id,
+            blocked_id: otherUser.id,
         },
         include: {
-            following: true,
-            follower: true
+            blocking: true,
+            blocker: true
         }
     })
 }
@@ -79,7 +79,7 @@ export const unblockUser = async (id: number) => {
     if (!existingBlock) {
         throw new Error("Not blocking")
     }
-    const unfollow = await db.block.delete(
+    const unblock = await db.block.delete(
         {
             where: {
                 id: existingBlock.id
@@ -90,7 +90,7 @@ export const unblockUser = async (id: number) => {
         }
     )
 
-    return unfollow
+    return unblock
 }
 
 
