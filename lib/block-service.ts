@@ -79,7 +79,7 @@ export const unblockUser = async (id: number) => {
     if (!existingBlock) {
         throw new Error("Not blocking")
     }
-    return  await db.block.delete(
+    return db.block.delete(
         {
             where: {
                 id: existingBlock.id
@@ -88,7 +88,7 @@ export const unblockUser = async (id: number) => {
                 blocking: true,
             }
         }
-    )
+    );
 }
 
 
