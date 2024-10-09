@@ -2,7 +2,7 @@ import {db} from "@/lib/db";
 
 // Get all categories
 export const getAllCategories = async () => {
-    return await db.category.findMany();
+    return db.category.findMany();
 }
 
 // Get category by id
@@ -27,7 +27,7 @@ export const createCategory = async (title: string) => {
 }
 
 // Update a category by id
-export const updateCategory = async (id: bigint, title: string) => {
+export const updateCategory = async (id: number, title: string) => {
     return db.category.update({
         where: {id},
         data: {title},
@@ -35,14 +35,14 @@ export const updateCategory = async (id: bigint, title: string) => {
 }
 
 // Delete a category by id
-export const deleteCategory = async (id: bigint) => {
+export const deleteCategory = async (id: number) => {
     return db.category.delete({
         where: {id},
     });
 }
 
 // Add a category to a stream by stream id and category id
-export const addCategoryToStream = async (streamId: bigint, categoryId: bigint) => {
+export const addCategoryToStream = async (streamId: number, categoryId: number) => {
     return db.streamCategory.create({
         data: {
             stream_id: streamId,
@@ -52,7 +52,7 @@ export const addCategoryToStream = async (streamId: bigint, categoryId: bigint) 
 }
 
 // Remove a category from a stream by stream id and category id
-export const removeCategoryFromStream = async (streamId: bigint, categoryId: bigint) => {
+export const removeCategoryFromStream = async (streamId: number, categoryId: number) => {
     return db.streamCategory.delete({
         where: {
             stream_id_category_id: {
