@@ -90,17 +90,17 @@ model Follow {
 
 model Block {
   id          BigInt   @id @default(autoincrement())
-  blocked_id  BigInt
-  blocking_id BigInt
+  blocker_id  BigInt
+  blocked_id BigInt
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  blocked  User @relation("UserBlockedBy", fields: [blocked_id], references: [id])
-  blocking User @relation("UserBlocking", fields: [blocking_id], references: [id])
+  blocked  User @relation("Blocker", fields: [blocker_id], references: [id])
+  blocking User @relation("Blocked", fields: [blocked_id], references: [id])
 
-  @@unique([blocked_id, blocking_id], name: "unique_block")
+  @@unique([blocker_id, blocked_id], name: "unique_block")
+  @@index([blocker_id])
   @@index([blocked_id])
-  @@index([blocking_id])
 }
 
 model Stream {
