@@ -2,15 +2,20 @@
 
 import { revalidatePath } from "next/cache";
 import { followUser, unfollowUser } from "@/lib/follow-service";
-import {blockUser, unblockUser} from "@/lib/block-service";
+import { blockUser, unblockUser } from "@/lib/block-service";
+import { getSelf } from "@/lib/auth-service";
+import { db } from "@/lib/db";
 
 export const onBlock = async (id: number) => {
+    const self = await getSelf()
     try {
         const blockedUser = await blockUser(id);
         revalidatePath("/")
+
         if (blockedUser) {
             revalidatePath(`/${blockedUser.blocked.username}`)
         }
+
         return blockedUser
     } catch (error) {
         throw new Error("Internal Server Error")
@@ -28,5 +33,32 @@ export const onUnblock = async (id: number) => {
         return unblockedUser
     } catch (error) {
         throw new Error("Internal Server Error")
+    }
+}
+
+export const isBlockedByUser = async (id: number) => {
+    try {
+        const self = await getSelf()
+
+        const otherUser = await db.user.findUnique({
+            where: { id }
+        })
+
+        if (!otherUser) {
+            throw new Error('User not found')
+        }
+        if (otherUser.id == self.id) {
+            return false
+        }
+
+        const existingBlock = await db.block.findFirst({
+            where: {
+                blocker_id: otherUser.id,
+                blocked_id: self.id,
+            }
+        })
+        return !!existingBlock
+    } catch {
+        return false
     }
 }
