@@ -14,13 +14,18 @@ const CreatorPage = async ({
 
     const user = await getUserByUserName(params.username)
 
-    if (!user || user.externalUserId !== externalUser?.id) {
+    if (!user || user.external_user_id !== externalUser?.id) {
         throw new Error('Unauthorized')
     }
 
     return (
-        <div>
-            creator
+        <div className="h-full">
+            {/* <StreamLayer
+                user={user}
+                // streams = {user.stream}
+                isFollowing
+            /> */}
+            streams
         </div>
     )
 }

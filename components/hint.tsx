@@ -3,8 +3,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 
 interface HintProps {
     label: string,
-    side: 'top' | 'right' | 'left' | 'bottom',
-    align: 'start' | 'center' | 'end',
+    side?: 'top' | 'right' | 'left' | 'bottom',
+    align?: 'start' | 'center' | 'end',
     children: React.ReactNode,
     asChild?: boolean
 }
