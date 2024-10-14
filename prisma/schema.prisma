@@ -104,17 +104,18 @@ model Block {
 }
 
 model Stream {
-  id              BigInt   @id @default(autoincrement())
-  user_id         BigInt
-  title           String
-  thumbnail_url   String?
-  ingress_id      String
-  server_url      String
-  stream_key      String
-  is_live         Boolean
-  is_chat_enabled Boolean
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id                     BigInt   @id @default(autoincrement())
+  user_id                BigInt
+  title                  String
+  thumbnail_url          String?
+  ingress_id             String?  @unique
+  server_url             String?
+  stream_key             String?
+  is_live                Boolean  @default(false)
+  is_chat_enabled        Boolean  @default(true)
+  is_chat_followers_only Boolean  @default(false)
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
 
   categories StreamCategory[]
   Comment    Comment[]
