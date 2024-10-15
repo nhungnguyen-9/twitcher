@@ -5,3 +5,4 @@ export const getStreamByID = async (id: number) => {
         where: {id: id}
     });
 }
+
