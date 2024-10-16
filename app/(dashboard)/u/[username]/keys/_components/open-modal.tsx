@@ -1,49 +1,78 @@
-'use client'
+"use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AlertTriangle } from "lucide-react"
+import { createIngress } from "@/actions/ingress";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import { IngressInput } from "livekit-server-sdk";
+import { AlertTriangle } from "lucide-react";
+import { ElementRef, useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
+
+const RTMP = String(IngressInput.RTMP_INPUT)
+const WHIP = String(IngressInput.WHIP_INPUT)
+
+type IngressType = typeof RTMP | typeof WHIP
 
 export const OpenModal = () => {
+    const closeRef = useRef<ElementRef<"button">>(null);
+    const [ingressType, setIngressType] = useState<IngressType>(RTMP)
+    const [isPending, startTransition] = useTransition()
+
+    const onSubmit = () => {
+        startTransition(() => {
+            createIngress(parseInt(ingressType))
+                .then(() => {
+                    toast("Ingress created")
+                    closeRef?.current?.click()
+                })
+                .catch(() => toast.error("Something went wrong"))
+        })
+    }
     return (
         <Dialog>
-            <DialogTrigger>
-                <Button variant='primary'>
-                    Create connection
+            <DialogTrigger asChild>
+                <Button variant="primary">
+                    Generate connection
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create connection</DialogTitle>
+                    <DialogTitle>Generate connection</DialogTitle>
                 </DialogHeader>
-                <Select>
-                    <SelectTrigger className='w-full'>
-                        <SelectValue placeholder='Ingress Type' />
+                <Select
+                    disabled={isPending}
+                    value={ingressType}
+                    onValueChange={(value) => setIngressType(value)}
+                >
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Ingress Type" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="RTMP">RTMP</SelectItem>
-                        <SelectItem value="WHIP">WHIP</SelectItem>
+                        <SelectItem value={RTMP}>RTMP</SelectItem>
+                        <SelectItem value={WHIP}>WHIP</SelectItem>
                     </SelectContent>
                 </Select>
                 <Alert>
-                    <AlertTriangle className='w-4 h-4' />
-                    <AlertTitle>Warning!</AlertTitle>
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Warning</AlertTitle>
                     <AlertDescription>
-                        This action will reset all active streams using the current connection
+                        This action will reset all active streams using the current connection.
                     </AlertDescription>
                 </Alert>
-                <div className='flex justify-between'>
-                    <DialogClose asChild>
-                        <Button variant='ghost'>Cancel</Button>
+                <div className="flex justify-between">
+                    <DialogClose ref={closeRef} asChild>
+                        <Button variant="ghost">
+                            Cancel
+                        </Button>
                     </DialogClose>
                     <Button
-                        variant='primary'
-                        onClick={() => { }}
-                    // disabled={isPending}
-                    >
-                        Create
+                        disabled={isPending}
+                        onClick={onSubmit}
+                        variant="primary">
+                        Generate
                     </Button>
                 </div>
             </DialogContent>
