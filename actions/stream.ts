@@ -10,36 +10,36 @@ export const updateStream = async (values: Partial<Stream>) => {
     try {
         const self = await getSelf()
         const selfStream = await db.stream.findUnique({
-            where: { user_id: self.id }
+            where: { user_id: 1 }
         })
 
         if (!selfStream) {
             throw new Error("Stream not found")
         }
 
-        const validData = {
-            name: values.title,
-            isChatEnabled: values.is_chat_enabled,
-            isChatFollowersOnly: values.is_chat_followers_only,
-            // isChatDelayed: values.isChatDelayed
+        const validData:any = {
+            title: values.title || selfStream.title,
+            is_chat_enabled: values.is_chat_enabled || selfStream.is_chat_enabled,
+            is_chat_followers_only: values.is_chat_followers_only || selfStream.is_chat_followers_only,
+            is_chat_delayed: values.is_chat_delayed || selfStream.is_chat_delayed,
         }
 
-        // Filter out undefined values
-        const filteredData = Object.fromEntries(
-            Object.entries(validData).filter(([_, v]) => v !== undefined)
-        );
-
         const stream = await db.stream.update({
-            where: { id: selfStream.id },
-            data: { ...filteredData }
+            where: { id: 1 },
+            data: { ...validData }
         })
+
+        if (!stream) {
+            throw new Error("Stream not found")
+        }
 
         revalidatePath(`/u/${self.username}/chat`)
         revalidatePath(`/u/${self.username}`)
         revalidatePath(`${self.username}`)
 
         return stream
-    } catch {
+    } catch(err) {
+        console.log(err)
         throw new Error("Internal Error")
     }
 }
