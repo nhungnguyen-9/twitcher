@@ -10,7 +10,7 @@ export const updateStream = async (values: Partial<Stream>) => {
     try {
         const self = await getSelf()
         const selfStream = await db.stream.findUnique({
-            where: { user_id: 1 }
+            where: { user_id: self.id }
         })
 
         if (!selfStream) {
@@ -25,7 +25,7 @@ export const updateStream = async (values: Partial<Stream>) => {
         }
 
         const stream = await db.stream.update({
-            where: { id: 1 },
+            where: { id: selfStream.id},
             data: { ...validData }
         })
 
