@@ -91,7 +91,6 @@ export const createIngress = async (ingressType: IngressInput) => {
             id: self.id
         },
         data: {
-            is_live: true,
             ingress_id: sanitizedIngress.ingressId,
             server_url: sanitizedIngress.url,
             stream_key: sanitizedIngress.streamKey,
