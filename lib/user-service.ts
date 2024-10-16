@@ -4,6 +4,30 @@ export const getUserByUserName = async (username: string) => {
     const user = await db.user.findUnique({
         where: {
             username
+        },
+        select: {
+            id: true,
+            email: true,
+            external_user_id: true,
+            username: true,
+            bio: true,
+            image_url: true,
+            streams: {
+                select: {
+                    id: true,
+                    title: true,
+                    thumbnail_url: true,
+                    is_live: true,
+                    is_chat_enabled: true,
+                    is_chat_followers_only: true,
+                    is_chat_delayed: true
+                }
+            },
+            _count: {
+                select: {
+                    following: true
+                }
+            }
         }
     })
 

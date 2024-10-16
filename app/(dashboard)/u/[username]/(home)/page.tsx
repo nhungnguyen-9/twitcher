@@ -1,3 +1,4 @@
+import { StreamLayer } from "@/components/stream-layer"
 import { getUserByUserName } from "@/lib/user-service"
 import { currentUser } from "@clerk/nextjs/server"
 
@@ -14,18 +15,17 @@ const CreatorPage = async ({
 
     const user = await getUserByUserName(params.username)
 
-    if (!user || user.external_user_id !== externalUser?.id) {
+    if (!user || user.external_user_id !== externalUser?.id || !user.streams) {
         throw new Error('Unauthorized')
     }
 
     return (
         <div className="h-full">
-            {/* <StreamLayer
+            <StreamLayer
                 user={user}
-                // streams = {user.stream}
+                streams={user.streams}
                 isFollowing
-            /> */}
-            streams
+            />
         </div>
     )
 }
