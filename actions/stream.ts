@@ -17,12 +17,13 @@ export const updateStream = async (values: Partial<Stream>) => {
             throw new Error("Stream not found")
         }
 
-        const validData:any = {
-            title: values.title || selfStream.title,
-            is_chat_enabled: values.is_chat_enabled || selfStream.is_chat_enabled,
-            is_chat_followers_only: values.is_chat_followers_only || selfStream.is_chat_followers_only,
-            is_chat_delayed: values.is_chat_delayed || selfStream.is_chat_delayed,
+        const validData = {
+            title: values.title,
+            is_chat_enabled: values.is_chat_enabled,
+            is_chat_followers_only: values.is_chat_followers_only,
+            is_chat_delayed: values.is_chat_delayed,
         }
+
 
         const stream = await db.stream.update({
             where: { id: selfStream.id},
