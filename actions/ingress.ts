@@ -45,7 +45,6 @@ export const resetIngresses = async (hostIdentity: string) => {
     }
 }
 
-
 export const createIngress = async (ingressType: IngressInput) => {
     const self = await getSelf();
 
@@ -71,24 +70,36 @@ export const createIngress = async (ingressType: IngressInput) => {
         }
     }
 
+    // Get ingress from ingressClient
     const ingress = await ingressClient.createIngress(ingressType, options)
 
+    // Ensure that ingress data is serializable
     if (!ingress || !ingress.url || !ingress.streamKey) {
-        throw new Error('Failed to create ingress')
+        throw new Error('Failed to create ingress');
     }
 
+    // Sanitize and extract only necessary fields
+    const sanitizedIngress = {
+        ingressId: ingress.ingressId,
+        url: ingress.url,
+        streamKey: ingress.streamKey
+    }
+
+    // Update the stream record in the database
     await db.stream.update({
         where: {
-            user_id: self.id,
+            id: 1
         },
         data: {
-            ingress_id: ingress.ingressId,
-            server_url: ingress.url,
-            stream_key: ingress.streamKey,
+            ingress_id: sanitizedIngress.ingressId,
+            server_url: sanitizedIngress.url,
+            stream_key: sanitizedIngress.streamKey,
         }
-    })
+    });
 
+    // Revalidate paths
     revalidatePath(`/u/${self.username}/keys`);
 
-    return ingress;
+    // Return only the sanitized ingress data to avoid Client/Server serialization issues
+    return sanitizedIngress;
 }
