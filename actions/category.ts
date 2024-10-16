@@ -5,27 +5,27 @@ import {
     getCategoryById,
     removeCategoryFromStream
 } from "@/lib/stream-category-service";
-import {getStreamByID} from "@/lib/stream-service";
+import { getStreamByUserID } from "@/lib/stream-service";
 
 export const fetchCategories = () => {
     try {
-       return getAllCategories()
+        return getAllCategories()
     } catch (error) {
         throw new Error("Internal Server Error")
     }
 }
 
 export const onCreateCategory = (title: string) => {
-    try{
+    try {
         return createCategory(title)
-    }catch(error) {
+    } catch (error) {
         throw new Error("Internal Server Error")
     }
 }
 
 export const onAddCategoryToStream = (streamID: number, categoryID: number) => {
-    try{
-        const stream = getStreamByID(streamID)
+    try {
+        const stream = getStreamByUserID(streamID)
         if (!stream) {
             throw new Error("Not found stream ID")
         }
@@ -36,14 +36,14 @@ export const onAddCategoryToStream = (streamID: number, categoryID: number) => {
 
         return addCategoryToStream(streamID, categoryID)
     }
-    catch{
+    catch {
         throw new Error("Internal Server Error")
     }
 }
 
 export const onRemoveCategoryFromStream = (streamID: number, categoryID: number) => {
-    try{
-        const stream = getStreamByID(streamID)
+    try {
+        const stream = getStreamByUserID(streamID)
         if (!stream) {
             throw new Error("Not found stream ID")
         }
@@ -54,7 +54,7 @@ export const onRemoveCategoryFromStream = (streamID: number, categoryID: number)
 
         return removeCategoryFromStream(streamID, categoryID)
     }
-    catch{
+    catch {
         throw new Error("Internal Server Error")
     }
 }
