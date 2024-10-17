@@ -1,6 +1,6 @@
 "use server";
 
-import {v4} from "uuid";
+import { v4 } from "uuid";
 import { AccessToken } from "livekit-server-sdk";
 import { getSelf } from "@/lib/auth-service";
 import { getUserById } from "@/lib/user-service";
@@ -9,12 +9,12 @@ import { isBlockedByUser } from "./block";
 export const createViewerToken = async (hostIdentity: string) => {
     let self
 
-    try{
+    try {
         self = await getSelf();
-    }catch{
+    } catch {
         const id = v4();
-        const username=`guest#${Math.floor(Math.random() * 1000)}`
-        self = {id, username};
+        const username = `guest#${Math.floor(Math.random() * 1000)}`
+        self = { id, username };
     }
 
     const host = await getUserById(hostIdentity)
@@ -22,8 +22,8 @@ export const createViewerToken = async (hostIdentity: string) => {
         throw new Error("User not found")
     }
 
-    const isBlocked = await isBlockedByUser(Number(host.id))
-    if(isBlocked) {
+    const isBlocked = await isBlockedByUser(host.id.toString())
+    if (isBlocked) {
         throw new Error("User is blocked")
     }
 
@@ -33,8 +33,8 @@ export const createViewerToken = async (hostIdentity: string) => {
         process.env.LIVEKIT_API_KEY!,
         process.env.LIVEKIT_SECRET_KEY!,
         {
-            identity:isHost ? `host-${self.id}`: `self.id`,
-            name:self.username,
+            identity: isHost ? `host-${self.id}` : `self.id`,
+            name: self.username,
         }
     )
 
@@ -42,7 +42,7 @@ export const createViewerToken = async (hostIdentity: string) => {
         room: String(host.id),
         roomJoin: true,
         canPublish: false,
-        canPublishData:true,
+        canPublishData: true,
     })
 
     return await Promise.resolve(token.toJwt());
