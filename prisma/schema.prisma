@@ -96,7 +96,7 @@ model Block {
 model Stream {
   id            BigInt  @id @default(autoincrement())
   user_id       BigInt  @unique
-  category_id   BigInt
+  category_id   BigInt?
   title         String
   thumbnail_url String?
   ingress_id    String? @unique
@@ -113,8 +113,8 @@ model Stream {
 
   Comment Comment[]
 
-  user     User     @relation(fields: [user_id], references: [id])
-  category Category @relation(fields: [category_id], references: [id])
+  user     User      @relation(fields: [user_id], references: [id])
+  category Category? @relation(fields: [category_id], references: [id])
 
   @@unique([stream_key], name: "unique_stream_key")
   @@index([user_id])
