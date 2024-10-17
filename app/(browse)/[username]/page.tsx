@@ -19,8 +19,8 @@ const UserPage = async ({
         notFound()
     }
 
-    const isFollowing = await isFollowingUser(Number(user.id))
-    const isBlocked = await isBlockedByUser(Number(user.id))
+    const isFollowing = await isFollowingUser(user.id.toString())
+    const isBlocked = await isBlockedByUser(user.id.toString())
 
     if (isBlocked) {
         notFound()
@@ -32,7 +32,7 @@ const UserPage = async ({
             <p>userID: {user.id.toString()}</p>
             <p>isFollowing: {`${isFollowing}`}</p>
             <p>is blocked by user: {`${isBlocked}`}</p>
-            <Actions isFollowing={isFollowing} userId={Number(user.id)} />
+            <Actions isFollowing={isFollowing} userId={user.id.toString()} />
         </div>
     )
 }

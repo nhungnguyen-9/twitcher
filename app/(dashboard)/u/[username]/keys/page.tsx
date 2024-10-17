@@ -6,7 +6,7 @@ import { getStreamByUserID } from "@/lib/stream-service"
 
 const KeyPage = async () => {
     const self = await getSelf()
-    const stream = await getStreamByUserID(Number(self.id))
+    const stream = await getStreamByUserID(self.id.toString())
 
     if (!stream) {
         throw new Error('Stream not found')

@@ -34,11 +34,11 @@ export const getFollowedUsers = async () => {
     }
 }
 
-const existedFollower = async (id: number) => {
+const existedFollower = async (id: string) => {
     const self = await getSelf()
 
     const otherUser = await db.user.findUnique({
-        where: { id }
+        where: { id: Number(id) }
     })
 
     if (!otherUser) {
@@ -56,7 +56,7 @@ const existedFollower = async (id: number) => {
     })
 }
 
-export const isFollowingUser = async (id: number) => {
+export const isFollowingUser = async (id: string) => {
     try {
         const existingFollow = await existedFollower(id)
         return !!existingFollow
@@ -66,11 +66,11 @@ export const isFollowingUser = async (id: number) => {
 
 }
 
-export const followUser = async (id: number) => {
+export const followUser = async (id: string) => {
     const self = await getSelf()
 
     const otherUser = await db.user.findUnique({
-        where: { id }
+        where: { id: Number(id) }
     })
 
     if (!otherUser) {
@@ -104,7 +104,7 @@ export const followUser = async (id: number) => {
     return follow
 }
 
-export const unfollowUser = async (id: number) => {
+export const unfollowUser = async (id: string) => {
     const existingFollow = await existedFollower(id)
     if (!existingFollow) {
         throw new Error("Not following")

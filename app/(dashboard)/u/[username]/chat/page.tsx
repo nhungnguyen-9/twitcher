@@ -5,7 +5,7 @@ import { ToggleCard } from './__components/toggle-card'
 
 const ChatPage = async () => {
     const self = await getSelf()
-    const stream = await getStreamByUserID(Number(self.id))
+    const stream = await getStreamByUserID(self.id.toString())
 
     if (!stream) {
         throw new Error("Stream not found")

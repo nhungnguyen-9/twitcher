@@ -6,7 +6,7 @@ import { blockUser, unblockUser } from "@/lib/block-service";
 import { getSelf } from "@/lib/auth-service";
 import { db } from "@/lib/db";
 
-export const onBlock = async (id: number) => {
+export const onBlock = async (id: string) => {
     const self = await getSelf()
     try {
         const blockedUser = await blockUser(id);
@@ -22,7 +22,7 @@ export const onBlock = async (id: number) => {
     }
 }
 
-export const onUnblock = async (id: number) => {
+export const onUnblock = async (id: string) => {
     try {
         const unblockedUser = await unblockUser(id)
         revalidatePath("/")
@@ -36,12 +36,12 @@ export const onUnblock = async (id: number) => {
     }
 }
 
-export const isBlockedByUser = async (id: number) => {
+export const isBlockedByUser = async (id: string) => {
     try {
         const self = await getSelf()
 
         const otherUser = await db.user.findUnique({
-            where: { id }
+            where: { id: Number(id) }
         })
 
         if (!otherUser) {
