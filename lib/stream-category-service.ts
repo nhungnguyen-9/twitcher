@@ -40,25 +40,3 @@ export const deleteCategory = async (id: string) => {
         where: { id: Number(id) },
     });
 }
-
-// Add a category to a stream by stream id and category id
-export const addCategoryToStream = async (streamId: number, categoryId: number) => {
-    return db.streamCategory.create({
-        data: {
-            stream_id: streamId,
-            category_id: categoryId,
-        },
-    });
-}
-
-// Remove a category from a stream by stream id and category id
-export const removeCategoryFromStream = async (streamId: number, categoryId: number) => {
-    return db.streamCategory.delete({
-        where: {
-            stream_id_category_id: {
-                stream_id: streamId,
-                category_id: categoryId,
-            },
-        },
-    });
-}
