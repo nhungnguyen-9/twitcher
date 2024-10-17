@@ -51,17 +51,7 @@ model Category {
   id    BigInt @id @default(autoincrement())
   title String
 
-  streams StreamCategory[]
-}
-
-model StreamCategory {
-  stream_id   BigInt
-  category_id BigInt
-
-  stream   Stream   @relation(fields: [stream_id], references: [id])
-  category Category @relation(fields: [category_id], references: [id])
-
-  @@id([stream_id, category_id])
+  streams Stream[]
 }
 
 model Comment {
@@ -106,6 +96,7 @@ model Block {
 model Stream {
   id            BigInt  @id @default(autoincrement())
   user_id       BigInt  @unique
+  category_id   BigInt
   title         String
   thumbnail_url String?
   ingress_id    String? @unique
@@ -120,10 +111,10 @@ model Stream {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  categories StreamCategory[]
-  Comment    Comment[]
+  Comment Comment[]
 
-  user User @relation(fields: [user_id], references: [id])
+  user     User     @relation(fields: [user_id], references: [id])
+  category Category @relation(fields: [category_id], references: [id])
 
   @@unique([stream_key], name: "unique_stream_key")
   @@index([user_id])

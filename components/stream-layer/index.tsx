@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils"
 import { Video, VideoSkeleton } from "./video"
 import { Header } from "./header"
 import { useViewerToken } from "@/hooks/use-viewer-token"
+import { InfoCard } from "./info-card"
+import { AboutCard } from "./about-card"
+import { Category } from "@prisma/client"
 
 
 type CustomStream = {
@@ -16,7 +19,7 @@ type CustomStream = {
     is_chat_followers_only: boolean,
     is_live: boolean,
     thumbnail_url: string | null,
-    title: string
+    title: string,
 }
 
 type CustomUser = {
@@ -45,9 +48,6 @@ export const StreamLayer = ({
         name,
         identity
     } = useViewerToken(user.id.toString())
-    console.log('🚀 ~ identity:', identity)
-    console.log('🚀 ~ name:', name)
-    console.log('🚀 ~ token:', token)
 
     const { collapsed } = useChatSidebar((state) => state)
 
@@ -83,6 +83,19 @@ export const StreamLayer = ({
                         imageUrl={user.image_url}
                         isFollowing={isFollowing}
                         title={streams.title}
+                    />
+                    <InfoCard
+                        hostIdentity={user.id.toString()}
+                        viewerIdentity={identity}
+                        name={streams.title}
+                        thumbnailUrl={streams.thumbnail_url}
+                    />
+                    <AboutCard
+                        hostName={user.username}
+                        hostIdentity={user.id.toString()}
+                        viewerIdentity={identity}
+                        bio={user.bio}
+                        followedByCount={user._count.following}
                     />
                 </div>
             </LiveKitRoom>
