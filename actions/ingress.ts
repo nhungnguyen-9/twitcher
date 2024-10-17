@@ -62,10 +62,12 @@ export const createIngress = async (ingressType: IngressInput) => {
     } else {
         options.video = {
             source: TrackSource.CAMERA,
+            //@ts-ignore
             preset: IngressVideoEncodingPreset.H264_1080P_30FPS_3_LAYERS,
         };
         options.audio = {
             source: TrackSource.MICROPHONE,
+            //@ts-ignore
             preset: IngressAudioEncodingPreset.OPUS_STEREO_96KBPS,
         }
     }
