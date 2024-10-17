@@ -15,9 +15,9 @@ const CreatorPage = async ({
 
     const user = await getUserByUserName(params.username)
 
-    if (!user || user.external_user_id !== externalUser?.id || !user.streams) {
-        throw new Error('Unauthorized')
-    }
+    // if (!user || user.external_user_id !== externalUser?.id || !user.streams) {
+    //     throw new Error('Unauthorized')
+    // }
 
     return (
         <div className="h-full">
