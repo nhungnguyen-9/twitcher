@@ -1,8 +1,8 @@
-import {db} from "@/lib/db";
+import { db } from "@/lib/db";
 
-export const getStreamByUserID = async (userID: number) => {
+export const getStreamByUserID = async (userID: string) => {
     return db.stream.findFirst({
-        where: {id: userID}
+        where: { id: Number(userID) }
     });
 }
 

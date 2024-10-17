@@ -1,5 +1,5 @@
-import {db} from "./db"
-import {getSelf} from "./auth-service"
+import { db } from "./db"
+import { getSelf } from "./auth-service"
 
 export const getBlockUsers = async () => {
     try {
@@ -18,11 +18,11 @@ export const getBlockUsers = async () => {
     }
 }
 
-export const existedBlocking = async (id: number) => {
+export const existedBlocking = async (id: string) => {
     const self = await getSelf()
 
     const otherUser = await db.user.findUnique({
-        where: {id}
+        where: { id: Number(id) }
     })
 
     if (!otherUser) {
@@ -34,15 +34,15 @@ export const existedBlocking = async (id: number) => {
     }
 
     return db.block.findFirst({
-        where: {blocker_id: self.id, blocked_id: otherUser.id}
+        where: { blocker_id: self.id, blocked_id: otherUser.id }
     })
 }
 
-export const blockUser = async (id: number) => {
+export const blockUser = async (id: string) => {
     const self = await getSelf()
 
     const otherUser = await db.user.findUnique({
-        where: {id}
+        where: { id: Number(id) }
     })
 
     if (!otherUser) {
@@ -74,7 +74,7 @@ export const blockUser = async (id: number) => {
     })
 }
 
-export const unblockUser = async (id: number) => {
+export const unblockUser = async (id: string) => {
     const existingBlock = await existedBlocking(id)
     if (!existingBlock) {
         throw new Error("Not blocking")
