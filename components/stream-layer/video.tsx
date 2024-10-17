@@ -17,10 +17,8 @@ export const Video = ({
     hostIdentity
 }: VideoProps) => {
     const connectionState = useConnectionState()
-    console.log('🚀 ~ connectionState:', connectionState)
 
     const participant = useRemoteParticipant(hostIdentity)
-    console.log('🚀 ~ participant:', participant)
 
     const tracks = useTracks([
         Track.Source.Camera,
@@ -28,7 +26,6 @@ export const Video = ({
     ]).filter((track) => track.participant.identity == hostIdentity)
 
     let content
-    console.log('🚀 ~ content:', content)
 
     if (!participant && connectionState === ConnectionState.Connected) {
         content = <OfflineVideo username={hostName} />
