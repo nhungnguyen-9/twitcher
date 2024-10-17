@@ -25,11 +25,11 @@ export const onCreateCategory = (title: string) => {
 
 export const onAddCategoryToStream = (streamID: number, categoryID: number) => {
     try {
-        const stream = getStreamByUserID(streamID)
+        const stream = getStreamByUserID(String(streamID))
         if (!stream) {
             throw new Error("Not found stream ID")
         }
-        const category = getCategoryById(categoryID)
+        const category = getCategoryById(String(categoryID))
         if (!category) {
             throw new Error("Not found category ID")
         }
@@ -43,11 +43,11 @@ export const onAddCategoryToStream = (streamID: number, categoryID: number) => {
 
 export const onRemoveCategoryFromStream = (streamID: number, categoryID: number) => {
     try {
-        const stream = getStreamByUserID(streamID)
+        const stream = getStreamByUserID(String(streamID))
         if (!stream) {
             throw new Error("Not found stream ID")
         }
-        const category = getCategoryById(categoryID)
+        const category = getCategoryById(String(categoryID))
         if (!category) {
             throw new Error("Not found category ID")
         }
