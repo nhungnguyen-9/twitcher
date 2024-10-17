@@ -85,6 +85,10 @@ export const InfoModal = ({
                         />
                     </div>
                     <div className="space-y-2">
+                        <Label>Categories</Label>
+
+                    </div>
+                    <div className="space-y-2">
                         <Label>Thumbnail</Label>
                         {thumbnailUrl ? (
                             <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10">
