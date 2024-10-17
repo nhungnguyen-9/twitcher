@@ -1,4 +1,5 @@
 
+
 import { getSelfByUsername } from "@/lib/auth-service";
 import { redirect } from "next/navigation";
 import { Container } from "./_components/container";
@@ -17,9 +18,9 @@ const CreatorLayout = async ({
 }: CreatorLayoutProps) => {
     const self = await getSelfByUsername(params.username)
 
-    // if (!self) {
-    //     redirect('/')
-    // }
+    if (!self) {
+        redirect('/')
+    }
 
     return (
         <>
