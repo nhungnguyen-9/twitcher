@@ -40,3 +40,4 @@ export const deleteCategory = async (id: string) => {
         where: { id: Number(id) },
     });
 }
+

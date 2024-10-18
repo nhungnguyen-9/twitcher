@@ -5,22 +5,65 @@ import Image from "next/image"
 import { Separator } from "../ui/separator"
 import { InfoModal } from "./info-modal"
 import { Input } from "../ui/input"
+import { useEffect, useState } from "react"
+import { fetchCategories } from "@/actions/category"
+import { fetchCategory } from "@/actions/stream"
 
 interface InfoCardProps {
     hostIdentity: string,
     viewerIdentity: string,
     name: string,
-    thumbnailUrl: string | null
+    thumbnailUrl: string | null,
+    streamId: string
 }
 
 export const InfoCard = ({
     hostIdentity,
     viewerIdentity,
     name,
-    thumbnailUrl
+    thumbnailUrl,
+    streamId
 }: InfoCardProps) => {
+    const [categories, setCategories] = useState<{ id: string, title: string }[]>([])
+    const [category, setCategory] = useState<string | null>(null)
+
     const hostAsViewer = `host-${hostIdentity}`
     const isHost = viewerIdentity === hostAsViewer
+
+    useEffect(() => {
+        if (isHost) {
+            const loadCategory = async () => {
+                try {
+                    const fetchedCategory = await fetchCategory(streamId)
+                    setCategory(fetchedCategory?.title || "No category")
+                } catch (error) {
+                    console.error("Failed to fetch category for stream:", error)
+                    setCategory("Error fetching category")
+                }
+            }
+
+            loadCategory()
+        }
+    }, [isHost, streamId])
+
+    useEffect(() => {
+        const loadCategories = async () => {
+            try {
+                const fetchedCategories = await fetchCategories()
+                setCategories(fetchedCategories)
+            } catch (error) {
+                console.error("Failed to fetch categories:", error)
+            }
+        }
+
+        if (isHost) {
+            loadCategories()
+        }
+    }, [isHost])
+
+    const handleCategoryUpdate = (newCategory: string) => {
+        setCategory(newCategory)
+    }
 
     if (!isHost) return null
 
@@ -42,6 +85,8 @@ export const InfoCard = ({
                     <InfoModal
                         initialName={name}
                         initialThumbnail={thumbnailUrl}
+                        categories={categories}
+                        onCategoryUpdate={handleCategoryUpdate}
                     />
                 </div>
                 <Separator />
@@ -58,10 +103,9 @@ export const InfoCard = ({
                         <h3 className="text-sm text-muted-foreground mb-2">
                             Categories
                         </h3>
-                        <Input
-                            // value={value || ''}
-                            disabled
-                        />
+                        <p className="text-sm font-semibold">
+                            {category}
+                        </p>
                     </div>
                     <div>
                         <h3 className="text-sm text-muted-foreground mb-2">
