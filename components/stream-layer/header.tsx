@@ -28,7 +28,8 @@ export const Header = ({
     const participant = useRemoteParticipant(hostIdentity)
 
     const isLive = !!participant
-    const participantCount = participants.length - 1
+    const participantCount = participants.length - 2
+
 
     const hostAsViewer = `host-${hostIdentity}`
     const isHost = viewerIdentity === hostAsViewer
@@ -57,7 +58,7 @@ export const Header = ({
                         <div className="font-semibold flex gap-x-1 items-center text-xs text-rose-500">
                             <UserIcon className="h-4 w-4" />
                             <p>
-                                {participantCount} {participantCount === 1 ? 'viewer' : 'viewers'}
+                                {participantCount > 0 ? participantCount : 0} {participantCount === 1 || participantCount === 0 ? 'viewer' : 'viewers'}
                             </p>
                         </div>
                     ) : (
