@@ -32,7 +32,7 @@ export const getUserByUserName = async (username: string) => {
     })
 
     if (!user) {
-        throw new Error("Not found")
+        return null
     }
 
     return user;
