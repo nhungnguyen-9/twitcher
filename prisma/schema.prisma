@@ -22,11 +22,12 @@ model User {
 
   // Relations
   streams   Stream?
-  followers Follow[] @relation("FollowedBy")
-  following Follow[] @relation("Following")
-  blocker   Block[]  @relation("Blocker")
-  blocked   Block[]  @relation("Blocked")
+  followers Follow[]  @relation("FollowedBy")
+  following Follow[]  @relation("Following")
+  blocker   Block[]   @relation("Blocker")
+  blocked   Block[]   @relation("Blocked")
   socials   Social[]
+  comments  Comment[]
 
   @@index([username], name: "idx_username")
 }
@@ -56,10 +57,16 @@ model Category {
 
 model Comment {
   id        BigInt @id @default(autoincrement())
-  stream_id BigInt
   content   String
+  commenter String
+
+  stream_id BigInt
+  user_id   BigInt
+
+  created_at DateTime @default(now())
 
   stream Stream @relation(fields: [stream_id], references: [id])
+  user   User   @relation(fields: [user_id], references: [id])
 }
 
 model Follow {
