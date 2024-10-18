@@ -10,6 +10,7 @@ import { useViewerToken } from "@/hooks/use-viewer-token"
 import { InfoCard } from "./info-card"
 import { AboutCard } from "./about-card"
 import { Category } from "@prisma/client"
+import { Chat } from "./chat"
 
 
 type CustomStream = {
@@ -96,6 +97,23 @@ export const StreamLayer = ({
                         viewerIdentity={identity}
                         bio={user.bio}
                         followedByCount={user._count.following}
+                    />
+                </div>
+                <div
+                    className={cn(
+                        'col-span-1',
+                        collapsed && 'hidden'
+                    )}
+                >
+                    <Chat
+                        viewerName={name}
+                        hostName={user.username}
+                        hostIdentity={user.id.toString()}
+                        isFollowing={isFollowing}
+                        streamId={streams.id.toString()}
+                        isChatEnabled={streams.is_chat_enabled}
+                        isChatDelayed={streams.is_chat_delayed}
+                        isChatFollowersOnly={streams.is_chat_followers_only}
                     />
                 </div>
             </LiveKitRoom>
