@@ -1,8 +1,11 @@
+import { isBlockedByUser } from "@/actions/block";
+import { StreamLayer } from "@/components/stream-layer";
 import { isFollowingUser } from "@/lib/follow-service";
 import { getUserByUserName } from "@/lib/user-service";
 import { notFound } from "next/navigation";
-import { Actions } from "./_components/actions";
-import { isBlockedByUser } from "@/actions/block";
+import { Suspense } from "react";
+import UserLoading from "./loading";
+
 
 interface UserPageProps {
     params: {
@@ -15,25 +18,27 @@ const UserPage = async ({
 }: UserPageProps) => {
     const user = await getUserByUserName(params.username)
 
-    if (!user) {
+    if (!user || !user.streams) {
         notFound()
     }
 
-    const isFollowing = await isFollowingUser(user.id.toString())
-    const isBlocked = await isBlockedByUser(user.id.toString())
+    const isFollowing = await isFollowingUser(String(user.id))
+    const isBlocked = await isBlockedByUser(String(user.id))
 
     if (isBlocked) {
-        notFound()
+        notFound();
     }
 
     return (
-        <div className="flex flex-col gap-y-4">
-            <p>username: {user.username}</p>
-            <p>userID: {user.id.toString()}</p>
-            <p>isFollowing: {`${isFollowing}`}</p>
-            <p>is blocked by user: {`${isBlocked}`}</p>
-            <Actions isFollowing={isFollowing} userId={user.id.toString()} />
-        </div>
+        <Suspense fallback={<UserLoading />}>
+            <div className="h-full">
+                <StreamLayer
+                    user={user}
+                    streams={user.streams}
+                    isFollowing={isFollowing}
+                />
+            </div>
+        </Suspense>
     )
 }
 
