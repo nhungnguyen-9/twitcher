@@ -10,7 +10,7 @@ interface ResultCardProps {
         user: User;
         is_live: boolean;
         title: string;
-        thumbnail_url:string | null
+        thumbnail_url: string | null
     }
 }
 
