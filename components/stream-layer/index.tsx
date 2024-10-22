@@ -36,11 +36,6 @@ type CustomUser = {
     image_url: string,
     _count: { following: number },
     streams: CustomStream | null,
-    socials: Array<{
-        id: string,
-        name: string,
-        link: string,
-    }>
 }
 
 interface StreamLayerProps {
