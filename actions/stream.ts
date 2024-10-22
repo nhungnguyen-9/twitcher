@@ -7,7 +7,7 @@ import { Stream } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
 type StreamUpdateValues = Omit<Partial<Stream>, 'category_id'> & {
-    category_id?: bigint | null; // Add category_id back as a separate optional property
+    category_id?: bigint | null;
 }
 
 export const updateStreamWithCategory = async (values: StreamUpdateValues, category_id?: string | null) => {

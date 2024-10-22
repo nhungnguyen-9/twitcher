@@ -11,8 +11,8 @@ import { InfoCard } from "./info-card"
 import { AboutCard } from "./about-card"
 import { Chat, ChatSkeleton } from "./chat"
 import { useEffect, useState } from "react"
-import { fetchCategory } from "@/actions/stream"
-
+import { Social } from "@prisma/client"
+import { getSocials } from "@/actions/social"
 
 type CustomStream = {
     id: bigint,
@@ -35,7 +35,12 @@ type CustomUser = {
     email: string,
     image_url: string,
     _count: { following: number },
-    streams: CustomStream | null
+    streams: CustomStream | null,
+    socials: Array<{
+        id: string,
+        name: string,
+        link: string,
+    }>
 }
 
 interface StreamLayerProps {
@@ -56,6 +61,31 @@ export const StreamLayer = ({
     } = useViewerToken(user.id.toString())
 
     const { collapsed } = useChatSidebar((state) => state)
+
+    const [socials, setSocials] = useState<Array<{
+        id: string,
+        name: string,
+        link: string,
+    }>>([])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const userData = await getSocials(user.id.toString())
+                const formattedSocials = userData.map((social) => ({
+                    id: social.id.toString(),
+                    user_id: social.user_id.toString(),
+                    name: social.name,
+                    link: social.link,
+                }));
+                setSocials(formattedSocials);
+            } catch (error) {
+                console.error("Error fetching user data:", error)
+            }
+        }
+
+        fetchData()
+    }, [user.id])
 
     if (!token || !name || !identity) {
         return (
@@ -103,6 +133,12 @@ export const StreamLayer = ({
                         viewerIdentity={identity}
                         bio={user.bio}
                         followedByCount={user._count.following}
+                        socials={socials}
+                        onUpdateSocials={(newSocials: Array<{
+                            id: string,
+                            name: string,
+                            link: string,
+                        }>) => setSocials(newSocials)}
                     />
                 </div>
                 <div
