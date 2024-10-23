@@ -4,7 +4,6 @@ import { Pencil } from "lucide-react"
 import Image from "next/image"
 import { Separator } from "../ui/separator"
 import { InfoModal } from "./info-modal"
-import { Input } from "../ui/input"
 import { useEffect, useState } from "react"
 import { fetchCategories } from "@/actions/category"
 import { fetchCategory } from "@/actions/stream"
@@ -26,6 +25,7 @@ export const InfoCard = ({
 }: InfoCardProps) => {
     const [categories, setCategories] = useState<{ id: string, title: string }[]>([])
     const [category, setCategory] = useState<string | null>(null)
+    const [categoryId, setCategoryId] = useState<string | null>(null)
 
     const hostAsViewer = `host-${hostIdentity}`
     const isHost = viewerIdentity === hostAsViewer
@@ -36,9 +36,11 @@ export const InfoCard = ({
                 try {
                     const fetchedCategory = await fetchCategory(streamId)
                     setCategory(fetchedCategory?.title || "No category")
+                    setCategoryId(fetchedCategory?.id.toString() || null)
                 } catch (error) {
                     console.error("Failed to fetch category for stream:", error)
                     setCategory("Error fetching category")
+                    setCategoryId(null)
                 }
             }
 
@@ -85,6 +87,7 @@ export const InfoCard = ({
                     <InfoModal
                         initialName={name}
                         initialThumbnail={thumbnailUrl}
+                        initialCategory={categoryId}
                         categories={categories}
                         onCategoryUpdate={handleCategoryUpdate}
                     />
@@ -120,10 +123,8 @@ export const InfoCard = ({
                                     className="object-cover"
                                 />
                             </div>
-                        )
-                        }
+                        )}
                     </div>
-
                 </div>
             </div>
         </div>

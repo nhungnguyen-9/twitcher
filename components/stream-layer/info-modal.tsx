@@ -1,6 +1,6 @@
 'use client'
 
-import { updateStream, updateStreamWithCategory } from "@/actions/stream"
+import { updateStreamWithCategory } from "@/actions/stream"
 import { useRouter } from "next/navigation"
 import { ElementRef, useEffect, useRef, useState, useTransition } from "react"
 import { toast } from "sonner"
@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 interface InfoModalProps {
     initialName: string,
     initialThumbnail: string | null,
+    initialCategory: string | null,
     categories: { id: string, title: string }[],
     onCategoryUpdate: (newCategory: string) => void
 }
@@ -24,6 +25,7 @@ interface InfoModalProps {
 export const InfoModal = ({
     initialName,
     initialThumbnail,
+    initialCategory,
     categories,
     onCategoryUpdate
 }: InfoModalProps) => {
@@ -32,7 +34,7 @@ export const InfoModal = ({
 
     const [name, setName] = useState(initialName)
     const [thumbnailUrl, setThumbnailUrl] = useState(initialThumbnail)
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory)
 
     const [isPending, startTransition] = useTransition()
 
@@ -43,17 +45,14 @@ export const InfoModal = ({
     useEffect(() => {
         setName(initialName)
         setThumbnailUrl(initialThumbnail)
-        setSelectedCategory(null)
-    }, [initialName, initialThumbnail])
-
+        setSelectedCategory(initialCategory)
+    }, [initialName, initialThumbnail, initialCategory])
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        const categoryIdToSend = selectedCategory || null
-
         startTransition(() => {
-            updateStreamWithCategory({ title: name }, categoryIdToSend)
+            updateStreamWithCategory({ title: name, thumbnail_url: thumbnailUrl }, selectedCategory)
                 .then(() => {
                     toast.success('Stream updated')
 
@@ -64,8 +63,6 @@ export const InfoModal = ({
                         }
                     }
 
-                    setName(initialName)
-                    setSelectedCategory(null)
                     closeRef?.current?.click()
                 })
                 .catch(() => toast.error('Something went wrong'))
@@ -74,11 +71,10 @@ export const InfoModal = ({
 
     const onRemoveThumbnail = () => {
         startTransition(() => {
-            updateStream({ thumbnail_url: null })
+            updateStreamWithCategory({ thumbnail_url: null }, selectedCategory)
                 .then(() => {
-                    toast.success('Stream updated')
-                    setThumbnailUrl('')
-                    closeRef?.current?.click()
+                    toast.success('Thumbnail removed')
+                    setThumbnailUrl(null)
                 })
                 .catch(() => toast.error('Something went wrong'))
         })
@@ -165,10 +161,16 @@ export const InfoModal = ({
                                         }
                                     }}
                                     onClientUploadComplete={(res) => {
-                                        console.log('🚀 ~ onClientUploadComplete ~ res:', res)
-                                        setThumbnailUrl(res?.[0]?.url)
-                                        router.refresh()
-                                        closeRef?.current?.click()
+                                        if (res && res[0]) {
+                                            setThumbnailUrl(res[0].url)
+                                            updateStreamWithCategory({ thumbnail_url: res[0].url }, selectedCategory)
+                                                .then(() => {
+                                                    toast.success('Thumbnail updated')
+                                                    router.refresh()
+                                                    closeRef?.current?.click()
+                                                })
+                                                .catch(() => toast.error('Failed to update thumbnail'))
+                                        }
                                     }}
                                 />
                             </div>

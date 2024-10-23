@@ -45,14 +45,15 @@ export const updateStreamWithCategory = async (values: StreamUpdateValues, categ
 
         return {
             ...stream,
-            category_id: stream.category_id ? stream.category_id.toString() : null
-        };
+            id: stream.id.toString(),
+            category_id: stream.category_id ? stream.category_id.toString() : null,
+            user_id: stream.user_id.toString(),
+        }
     } catch (err) {
         console.log(err)
         throw new Error("Internal Error")
     }
 }
-
 
 export const updateStream = async (values: Partial<Stream>) => {
     try {
