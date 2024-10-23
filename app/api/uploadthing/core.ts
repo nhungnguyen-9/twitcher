@@ -1,4 +1,5 @@
 import { getSelf } from "@/lib/auth-service";
+import { convertBigIntToString } from "@/lib/convert-bigint-to-string";
 import { db } from "@/lib/db";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
@@ -15,12 +16,13 @@ export const ourFileRouter = {
         .middleware(async () => {
             const self = await getSelf()
 
-            return { user: self }
+            return { user: convertBigIntToString(self) }
         })
         .onUploadComplete(async ({ metadata, file }) => {
+            const userId = BigInt(metadata.user.id)
             await db.stream.update({
                 where: {
-                    user_id: metadata.user.id
+                    user_id: userId
                 },
                 data: {
                     thumbnail_url: file.url
