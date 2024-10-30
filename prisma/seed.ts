@@ -19,19 +19,36 @@ async function main() {
         },
     })
 
-    const gameCategory = await prisma.category.create({
-        data: {title: "gaming"}
+    const gameCategory = await prisma.category.upsert({
+        where: {id: 1},
+        update: {},
+        create: {
+            title: 'gaming',
+        },
     })
 
-    const podcastCategory = await prisma.category.create({
-        data: {title: "podcast"}
+    const podcastCategory = await prisma.category.upsert({
+        where: {id: 2},
+        update: {},
+        create: {
+            title: 'podcast',
+        },
     })
 
-    const entertainCategory = await prisma.category.create({
-        data: {title: "entertainment"}
+    const entertainCategory = await prisma.category.upsert({
+        where: {id: 3},
+        update: {},
+        create: {
+            title: 'entertainment',
+        },
     })
-
-
+    const techCategory = await prisma.category.upsert({
+        where: {id: 4}, // Assuming 4 is the unique id for the 'tech' category
+        update: {},
+        create: {
+            title: 'tech',
+        },
+    })
 }
 
 main()

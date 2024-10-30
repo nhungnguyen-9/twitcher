@@ -1,15 +1,38 @@
 services:
+  next:
+    container_name: twitcher-client
+    working_dir: /client
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/client/
+    ports:
+      - 3000:3000
+    command: npm run dev
+
   db:
     container_name: twitcher-db
     image: postgres:16.1-alpine
-    restart: always
     environment:
+      - POSTGRES_DB=twitcher
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=secret
     ports:
-      - '54320:5432'
+      - "54320:5432"
     volumes:
       - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
 volumes:
   db:
     driver: local
