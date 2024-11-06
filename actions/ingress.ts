@@ -104,10 +104,6 @@ export const createIngress = async (ingressType: IngressInput) => {
         // Return only the sanitized ingress data to avoid Client/Server serialization issues
         return sanitizedIngress;
     } catch (error: any) {
-        if (error.response?.status === 429) {
-            throw new Error("Too many requests. Please try again later.");
-        } else {
-            throw new Error(error.message || "An error occurred");
-        }
+        throw new Error(error);
     }
 };

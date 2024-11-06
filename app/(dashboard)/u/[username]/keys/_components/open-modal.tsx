@@ -40,7 +40,7 @@ export const OpenModal = () => {
                     closeRef?.current?.click();
                 })
                 .catch((error) => {
-                    if (error.message.includes("Too many requests")) {
+                    if (error.message.includes("Too Many Requests")) {
                         toast.error(
                             "You're sending too many requests. Please wait and try again."
                         );
